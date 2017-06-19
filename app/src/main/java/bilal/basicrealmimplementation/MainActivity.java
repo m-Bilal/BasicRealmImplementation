@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     RealmConfiguration config;
 
     EditText editTextId, editTextName;
-    Button buttonLogResults, buttonSave;
+    Button buttonLogResults, buttonSave, buttonDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         editTextName = (EditText) findViewById(R.id.edittext_name);
         buttonLogResults = (Button) findViewById(R.id.button_log_results);
         buttonSave = (Button) findViewById(R.id.button_save);
+        buttonDelete = (Button) findViewById(R.id.button_delete);
         addActionListeners();
 
         createRealmConfig();
@@ -46,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 readFromRealm();
+            }
+        });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteFromRealm();
             }
         });
     }
@@ -85,5 +93,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(i.getId() + "", i.getName());
             }
         }
+    }
+
+    void deleteFromRealm() {
+        realm.beginTransaction();
+        RealmResults<MyRealmObject> results = realm.where(MyRealmObject.class).findAll();
+        results.deleteAllFromRealm();
+        Log.d("Result", "Deleted");
+        realm.commitTransaction();
     }
 }
