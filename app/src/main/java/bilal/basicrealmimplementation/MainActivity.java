@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     RealmConfiguration config;
 
     EditText editTextId, editTextName;
-    Button buttonLogResults, buttonSave, buttonDelete;
+    Button buttonLogResults, buttonSave, buttonDelete, buttonUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         buttonLogResults = (Button) findViewById(R.id.button_log_results);
         buttonSave = (Button) findViewById(R.id.button_save);
         buttonDelete = (Button) findViewById(R.id.button_delete);
+        buttonUpdate = (Button) findViewById(R.id.button_update);
         addActionListeners();
 
         createRealmConfig();
@@ -54,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteFromRealm();
+            }
+        });
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateRealmObject();
             }
         });
     }
@@ -100,6 +108,18 @@ public class MainActivity extends AppCompatActivity {
         RealmResults<MyRealmObject> results = realm.where(MyRealmObject.class).findAll();
         results.deleteAllFromRealm();
         Log.d("Result", "Deleted");
+        realm.commitTransaction();
+    }
+
+    void updateRealmObject() {
+        Integer id = Integer.parseInt(editTextId.getText().toString());
+        String name = editTextName.getText().toString();
+        MyRealmObject myObject = new MyRealmObject();
+        myObject.setId(id);
+        myObject.setName(name);
+
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(myObject);
         realm.commitTransaction();
     }
 }
